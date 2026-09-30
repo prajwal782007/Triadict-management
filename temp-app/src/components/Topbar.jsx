@@ -1,11 +1,16 @@
-import { Bell, Search } from 'lucide-react';
+import { Bell, Search, LogOut } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
-export default function Topbar({ title }) {
+export default function Topbar({ title, session }) {
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric'
   });
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <header className="h-16 border-b border-border bg-surface/50 backdrop-blur-sm flex items-center justify-between px-4 md:px-8 shrink-0">
@@ -20,7 +25,7 @@ export default function Topbar({ title }) {
           <input 
             type="text" 
             placeholder="Search..." 
-            className="h-9 w-64 bg-background border border-border rounded-md pl-9 pr-3 text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-text-main placeholder-text-muted"
+            className="h-9 w-64 bg-background border border-border rounded-md pl-9 pr-3 text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-text-main placeholder-text-muted"
           />
         </div>
         
@@ -29,9 +34,13 @@ export default function Topbar({ title }) {
           <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full ring-2 ring-surface"></span>
         </button>
         
-        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-purple-800 border border-border overflow-hidden cursor-pointer">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=transparent" alt="User" className="w-full h-full object-cover" />
+        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-purple-800 border border-border overflow-hidden cursor-pointer" title={session?.user?.email}>
+          <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${session?.user?.email || 'Felix'}&backgroundColor=transparent`} alt="User" className="w-full h-full object-cover" />
         </div>
+        
+        <button onClick={handleSignOut} className="w-9 h-9 rounded-md flex items-center justify-center text-text-muted hover:text-rose-500 hover:bg-rose-500/10 transition-colors" title="Sign Out">
+          <LogOut size={18} />
+        </button>
       </div>
     </header>
   );
