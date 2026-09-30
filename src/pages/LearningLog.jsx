@@ -23,6 +23,7 @@ export default function LearningLog({ session }) {
       setLogs(data || []);
     } catch (error) {
       console.error('Error fetching logs:', error.message);
+      alert('Error fetching logs: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -40,7 +41,7 @@ export default function LearningLog({ session }) {
             title: newLog.title, 
             category: newLog.category, 
             duration_minutes: newLog.duration_minutes, 
-            user_id: session?.user?.id 
+            member_id: session?.user?.id 
           }
         ])
         .select();
@@ -51,6 +52,7 @@ export default function LearningLog({ session }) {
       setIsAdding(false);
     } catch (error) {
       console.error('Error adding log:', error.message);
+      alert('Error adding log: ' + error.message);
     }
   };
 
@@ -61,6 +63,7 @@ export default function LearningLog({ session }) {
       if (error) throw error;
     } catch (error) {
       console.error('Error deleting log:', error.message);
+      alert('Error deleting log: ' + error.message);
       fetchLogs();
     }
   };

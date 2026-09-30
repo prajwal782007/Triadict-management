@@ -24,6 +24,7 @@ export default function Tasks({ session }) {
       setTasks(data || []);
     } catch (error) {
       console.error('Error fetching tasks:', error.message);
+      alert('Error fetching tasks: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -41,7 +42,7 @@ export default function Tasks({ session }) {
             title: newTaskTitle, 
             status: 'pending', 
             priority: 'medium', 
-            user_id: session?.user?.id 
+            assigned_to: session?.user?.id 
           }
         ])
         .select();
@@ -52,6 +53,7 @@ export default function Tasks({ session }) {
       setIsAdding(false);
     } catch (error) {
       console.error('Error adding task:', error.message);
+      alert('Error adding task: ' + error.message);
     }
   };
 
@@ -70,6 +72,7 @@ export default function Tasks({ session }) {
       if (error) throw error;
     } catch (error) {
       console.error('Error updating task:', error.message);
+      alert('Error updating task: ' + error.message);
       fetchTasks(); // Revert on error
     }
   };
@@ -81,6 +84,7 @@ export default function Tasks({ session }) {
       if (error) throw error;
     } catch (error) {
       console.error('Error deleting task:', error.message);
+      alert('Error deleting task: ' + error.message);
       fetchTasks();
     }
   };
