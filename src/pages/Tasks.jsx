@@ -58,22 +58,23 @@ export default function Tasks({ session }) {
   };
 
   const toggleTaskStatus = async (id, currentStatus) => {
-    const nextStatus = currentStatus === 'pending' ? 'in-progress' : currentStatus === 'in-progress' ? 'completed' : 'pending';
-    
-    // Optimistic update
-    setTasks(tasks.map(t => t.id === id ? { ...t, status: nextStatus } : t));
+    const nextStatus = currentStatus === 'pending' ? 'in_progress' : currentStatus === 'in_progress' ? 'completed' : 'pending';
+    const completedAt = nextStatus === 'completed' ? new Date().toISOString() : null;
 
     try {
       const { error } = await supabase
         .from('tasks')
-        .update({ status: nextStatus })
+        .update({ status: nextStatus, completed_at: completedAt })
         .eq('id', id);
 
       if (error) throw error;
+      
+      // Update state only after DB confirmation
+      setTasks(tasks.map(t => t.id === id ? { ...t, status: nextStatus, completed_at: completedAt } : t));
     } catch (error) {
       console.error('Error updating task:', error.message);
       alert('Error updating task: ' + error.message);
-      fetchTasks(); // Revert on error
+      // No need to revert since we didn't optimistically update
     }
   };
 
@@ -105,7 +106,7 @@ export default function Tasks({ session }) {
       <div className="bg-surface border border-border rounded-xl flex flex-col min-h-[500px]">
         <div className="p-4 border-b border-border flex justify-between items-center">
           <div className="flex gap-2">
-            {['all', 'pending', 'in-progress', 'completed'].map(tab => (
+            {['all', 'pending', 'in_progress', 'completed'].map(tab => (
               <button 
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -113,7 +114,7 @@ export default function Tasks({ session }) {
                   activeTab === tab ? 'bg-primary/10 text-primary' : 'text-text-muted hover:bg-surface-hover hover:text-text-main'
                 }`}
               >
-                {tab.replace('-', ' ')}
+                {tab.replace('_', ' ')}
               </button>
             ))}
           </div>
@@ -150,11 +151,11 @@ export default function Tasks({ session }) {
                     onClick={() => toggleTaskStatus(task.id, task.status)}
                     className={`mt-0.5 shrink-0 w-5 h-5 rounded border flex items-center justify-center transition-colors ${
                       task.status === 'completed' ? 'bg-primary border-primary text-white' : 
-                      task.status === 'in-progress' ? 'border-primary text-primary' : 'border-text-muted bg-background'
+                      task.status === 'in_progress' ? 'border-primary text-primary' : 'border-text-muted bg-background'
                     }`}
                   >
                     {task.status === 'completed' && <CheckSquare size={14} />}
-                    {task.status === 'in-progress' && <div className="w-2 h-2 rounded-full bg-primary"></div>}
+                    {task.status === 'in_progress' && <div className="w-2 h-2 rounded-full bg-primary"></div>}
                   </button>
                   <div>
                     <h4 className={`text-sm font-medium ${task.status === 'completed' ? 'text-text-muted line-through' : 'text-text-main'}`}>
