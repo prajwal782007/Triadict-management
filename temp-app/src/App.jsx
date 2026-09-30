@@ -2,17 +2,11 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import Overview from './pages/Overview';
-
-function PlaceholderPage({ title }) {
-  return (
-    <div className="flex h-full items-center justify-center text-text-muted">
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold text-text-main mb-2">{title}</h2>
-        <p>This section is under construction.</p>
-      </div>
-    </div>
-  );
-}
+import MyWork from './pages/MyWork';
+import Tasks from './pages/Tasks';
+import LearningLog from './pages/LearningLog';
+import TeamActivity from './pages/TeamActivity';
+import Settings from './pages/Settings';
 
 function App() {
   const location = useLocation();
@@ -40,11 +34,11 @@ function App() {
           <div className="max-w-7xl mx-auto h-full">
             <Routes>
               <Route path="/" element={<Overview />} />
-              <Route path="/my-work" element={<PlaceholderPage title="My Work" />} />
-              <Route path="/tasks" element={<PlaceholderPage title="Tasks" />} />
-              <Route path="/learning-log" element={<PlaceholderPage title="Learning Log" />} />
-              <Route path="/team-activity" element={<PlaceholderPage title="Team Activity" />} />
-              <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
+              <Route path="/my-work" element={<MyWork />} />
+              <Route path="/tasks" element={<Tasks />} />
+              <Route path="/learning-log" element={<LearningLog />} />
+              <Route path="/team-activity" element={<TeamActivity />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </div>
         </main>
