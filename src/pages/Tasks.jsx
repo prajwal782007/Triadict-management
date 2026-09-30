@@ -162,7 +162,7 @@ export default function Tasks({ session }) {
                     </h4>
                     <div className="flex items-center gap-3 mt-1 text-xs text-text-muted">
                       <span className="flex items-center gap-1"><Clock size={12} /> {new Date(task.created_at).toLocaleDateString()}</span>
-                      <span className="px-1.5 py-0.5 rounded bg-surface border border-border">{task.user_id?.slice(0, 8) || 'Unknown'}</span>
+                      <span className="px-1.5 py-0.5 rounded bg-surface border border-border">{task.assigned_to?.slice(0, 8) || 'Unknown'}</span>
                     </div>
                   </div>
                 </div>
