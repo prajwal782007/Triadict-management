@@ -41,9 +41,9 @@ function App() {
     }
   };
 
-  // if (!session) {
-  //   return <Auth />;
-  // }
+  if (!session) {
+    return <Auth />;
+  }
 
   return (
     <div className="flex h-screen bg-background overflow-hidden text-sm">

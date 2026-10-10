@@ -216,20 +216,3 @@ flowchart TD
 * **Risk:** Local Hermes is unavailable when the host laptop is closed.
   * **Mitigation:** The dashboard implements a clear timeout and error message. The team must eventually decide on a persistent hosting strategy if 24/7 access is required.
 
-## 14. Unresolved Decisions and Assumptions
-* **Model Provider:** Which LLM provider (OpenAI, Anthropic, Gemini, etc.) will be used for Hermes?
-* **Integration Layer Hosting:** Will we use Supabase Edge Functions or a standalone Node server?
-* **Column Standardization:** Final exact ownership column names pending Phase 0 schema inspection.
-* **Persistent Hermes Availability:** Will Hermes remain local with expected downtime, or move to a server for persistent, asynchronous access for all 3 members?
-
-## 15. Final Implementation Checklist
-- [ ] Schema inspected to verify exact ownership columns and corresponding RLS policies.
-- [ ] Working frontend queries and CRUD operations preserved.
-- [ ] RLS policies verified and Team Summaries strictly defined.
-- [ ] Discord bot tracking voice states with startup reconciliation.
-- [ ] Dashboard analytics using real data, accurately handling midnight crossover and zero-hour days in weekly averages.
-- [ ] Hermes running locally with Model Provider.
-- [ ] Integration layer communicating securely with local Hermes without public exposure.
-- [ ] Dashboard AI interface fully functional and gracefully handling offline timeouts.
-- [ ] Decision made and implemented for persistent Hermes availability.
-- [ ] System successfully deployed.

@@ -33,6 +33,7 @@ export default function Overview({ session: authSession }) {
   const [profiles, setProfiles] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
   const [nowMs, setNowMs] = useState(Date.now());
   const [selectedUserId, setSelectedUserId] = useState('all');
   const [dateRange, setDateRange] = useState('7d');
@@ -75,8 +76,10 @@ export default function Overview({ session: authSession }) {
       
       setProfiles(actualTeamMembers);
       setSessions(loadedSessions);
+      setFetchError(null);
     } catch (err) {
       console.error('Error fetching data:', err);
+      setFetchError(err.message || JSON.stringify(err));
     } finally {
       setLoading(false);
     }
@@ -197,6 +200,8 @@ export default function Overview({ session: authSession }) {
       }
     });
 
+    const onlineMembersCount = new Set(sessions.filter(s => !s.left_at).map(s => s.discord_user_id)).size;
+
     const mostActiveMemberName = mostActiveMemberId 
       ? (profiles.find(p => p.id === mostActiveMemberId)?.display_name || profiles.find(p => p.id === mostActiveMemberId)?.full_name || profiles.find(p => p.id === mostActiveMemberId)?.username) 
       : 'None';
@@ -262,34 +267,42 @@ export default function Overview({ session: authSession }) {
 
     return (
       <div className="flex flex-col gap-8">
-        <div id="diagnostics-panel" className="bg-surface border border-border p-4 rounded-xl text-xs font-mono max-h-96 overflow-auto mb-4">
-          <h3 className="font-bold mb-2">Development Diagnostics</h3>
-          <p>Total profiles found: {profiles.length}</p>
-          <p>Profiles with linked Discord IDs: {profiles.filter(p => p.discord_user_id).length}</p>
-          <p>Total voice sessions returned: {sessions.length}</p>
-          <p>Unmatched sessions: {sessions.filter(s => !profiles.find(p => p.discord_user_id === s.discord_user_id)).length}</p>
-          
-          <div className="mt-4">
-            <h4 className="font-bold">Calculated Hours & Sessions per Member:</h4>
-            {profiles.map(p => (
-              <p key={p.id}>{p.display_name || p.full_name || p.username}: {memberTotals[p.id]?.sessions || 0} sessions, {formatDuration(memberTotals[p.id]?.ms || 0)}</p>
-            ))}
-          </div>
-          
-          <div className="mt-4">
-            <h4 className="font-bold">Chart Series (Dataset Keys):</h4>
-            {profiles.map(p => (
-              <p key={p.id}>Label: "{p.display_name || p.full_name || p.username}", Key: "{p.id}_hours"</p>
-            ))}
-          </div>
-        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 shrink-0">
           <StatCard title="Total Team Hours" value={formatDuration(totalTeamMs)} icon={Clock} subtitle="Tracked voice time" />
           <StatCard title="Avg Daily Team Hours" value={formatDuration(avgDailyTeamMs)} icon={Activity} subtitle={`Across ${chartData.length} days`} />
           <StatCard title="Most Active Day" value={maxDayMs > 0 ? formatDuration(maxDayMs) : '0m'} icon={CalendarDays} subtitle={maxDayStr} />
           <StatCard title="Most Active Member" value={mostActiveMemberName} icon={User} subtitle={mostActiveMemberMs > 0 ? formatDuration(mostActiveMemberMs) : 'No activity'} subtitleColor="text-primary" />
           <StatCard title="Total Sessions" value={totalSessions.toString()} icon={Headphones} subtitle="Distinct voice sessions" />
-          <StatCard title="Active Members" value={`${activeMembersCount} / ${profiles.length}`} icon={Users} subtitle="Members with recorded time" />
+          <StatCard title="Online in VC" value={`${onlineMembersCount} / ${profiles.length}`} icon={Users} subtitle="Live right now" subtitleColor={onlineMembersCount > 0 ? "text-green-400" : "text-text-muted"} />
+        </div>
+
+        {/* TEAM STATUS */}
+        <div className="bg-surface border border-border rounded-xl p-5 flex flex-col shrink-0">
+          <div className="mb-4">
+            <h3 className="font-medium text-text-main text-lg">Current VC Status</h3>
+            <p className="text-sm text-text-muted mt-1">Live voice channel presence for the team.</p>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            {profiles.length > 0 ? profiles.map(p => {
+              const isOnline = sessions.some(s => s.discord_user_id === p.discord_user_id && !s.left_at);
+              return (
+                <div key={p.id} className="flex items-center gap-3 p-3 bg-background border border-border rounded-lg min-w-[200px] flex-1">
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center text-text-main font-bold border border-border">
+                      {(p.display_name || p.full_name || p.username || '?').charAt(0).toUpperCase()}
+                    </div>
+                    <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background ${isOnline ? 'bg-green-500' : 'bg-gray-500'}`}></div>
+                  </div>
+                  <div>
+                    <p className="text-text-main font-medium">{p.display_name || p.full_name || p.username}</p>
+                    <p className={`text-xs ${isOnline ? 'text-green-400 font-medium' : 'text-text-muted'}`}>{isOnline ? 'Online in VC' : 'Offline'}</p>
+                  </div>
+                </div>
+              );
+            }) : (
+              <div className="text-text-muted text-sm italic py-2">No team members found.</div>
+            )}
+          </div>
         </div>
 
         {/* GRAPH 1: Daily Team Comparison */}
@@ -320,59 +333,7 @@ export default function Overview({ session: authSession }) {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* GRAPH 3: Total Team Hours (Stacked) */}
-          <div className="bg-surface border border-border rounded-xl p-5 flex flex-col min-h-[400px]">
-            <div className="mb-6">
-              <h3 className="font-medium text-text-main text-lg">Total Team Work Hours</h3>
-              <p className="text-sm text-text-muted mt-1">Stacked daily contribution.</p>
-            </div>
-            {totalTeamMs === 0 ? (
-              <div className="flex-1 flex items-center justify-center text-text-muted border border-dashed border-border rounded-lg bg-background/50">No data</div>
-            ) : (
-              <div className="flex-1 min-h-0">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#262730" />
-                    <XAxis dataKey="displayDate" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dy={10} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} tickFormatter={(val) => `${val}h`} />
-                    <RechartsTooltip content={<CustomTooltipStacked />} cursor={{ fill: '#262730', opacity: 0.4 }} />
-                    <Legend iconType="circle" />
-                    {profiles.map((p, idx) => (
-                      <Bar key={p.id} dataKey={`${p.id}_hours`} name={p.display_name || p.full_name || p.username || 'Unknown User'} stackId="a" fill={COLORS[idx % COLORS.length]} radius={[idx === profiles.length -1 ? 4 : 0, idx === profiles.length -1 ? 4 : 0, 0, 0]} onClick={(data) => handleBarClick(data, p.id)} cursor="pointer" />
-                    ))}
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-          </div>
 
-          {/* GRAPH 2: Individual Trends (Multi-line) */}
-          <div className="bg-surface border border-border rounded-xl p-5 flex flex-col min-h-[400px]">
-            <div className="mb-6">
-              <h3 className="font-medium text-text-main text-lg">Individual Work Trends</h3>
-              <p className="text-sm text-text-muted mt-1">Changes in daily participation.</p>
-            </div>
-            {totalTeamMs === 0 ? (
-              <div className="flex-1 flex items-center justify-center text-text-muted border border-dashed border-border rounded-lg bg-background/50">No data</div>
-            ) : (
-              <div className="flex-1 min-h-0">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#262730" />
-                    <XAxis dataKey="displayDate" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dy={10} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} tickFormatter={(val) => `${val}h`} />
-                    <RechartsTooltip content={<CustomTooltipGrouped />} />
-                    <Legend iconType="circle" />
-                    {profiles.map((p, idx) => (
-                      <Line key={p.id} type="monotone" dataKey={`${p.id}_hours`} name={p.display_name || p.full_name || p.username || 'Unknown User'} stroke={COLORS[idx % COLORS.length]} strokeWidth={2} dot={{ r: 3, strokeWidth: 1 }} activeDot={{ r: 6 }} />
-                    ))}
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-          </div>
-        </div>
 
         {/* GRAPH 5: Team Participation Pie */}
         <div className="bg-surface border border-border rounded-xl p-5 flex flex-col items-center">
