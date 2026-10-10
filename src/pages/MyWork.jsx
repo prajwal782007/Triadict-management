@@ -236,16 +236,16 @@ export default function MyWork({ session: authSession }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-7 gap-px bg-border rounded-lg overflow-hidden border border-border">
+        <div className="grid grid-cols-7 gap-3">
           {DAYS_OF_WEEK.map(day => (
-            <div key={day} className="bg-surface py-2 text-center text-xs font-medium text-text-muted uppercase tracking-wider">
+            <div key={day} className="py-2 text-center text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
               {day}
             </div>
           ))}
           
           {calendarDays.map((date, idx) => {
             if (!date) {
-              return <div key={`empty-${idx}`} className="bg-surface/50 min-h-[100px]"></div>;
+              return <div key={`empty-${idx}`} className="min-h-[110px] rounded-xl bg-transparent"></div>;
             }
             
             const dateStr = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
@@ -257,21 +257,24 @@ export default function MyWork({ session: authSession }) {
               <div 
                 key={dateStr}
                 onClick={() => setSelectedDateStr(dateStr)}
-                className={`bg-surface min-h-[100px] p-2 flex flex-col transition-colors cursor-pointer border-t-0
-                  ${isSelected ? 'ring-2 ring-primary ring-inset z-10' : 'hover:bg-background/80'}
+                className={`min-h-[110px] p-3 flex flex-col cursor-pointer transition-all duration-200 border rounded-xl shadow-sm relative overflow-hidden
+                  ${isSelected ? 'border-primary ring-2 ring-primary ring-offset-2 ring-offset-surface bg-surface z-10 shadow-md scale-[1.02]' : 'border-border bg-surface hover:border-primary/50 hover:shadow-md hover:-translate-y-1'}
                 `}
               >
-                <div className="flex justify-between items-start mb-2">
-                  <span className={`text-sm font-medium w-7 h-7 flex items-center justify-center rounded-full
-                    ${isToday ? 'bg-primary text-white' : 'text-text-main'}
+                {/* 3D top edge highlight */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-50"></div>
+                
+                <div className="flex justify-between items-start mb-2 relative z-10">
+                  <span className={`text-sm font-semibold w-8 h-8 flex items-center justify-center rounded-full shadow-sm
+                    ${isToday ? 'bg-primary text-white shadow-primary/40' : 'bg-background text-text-main border border-border'}
                   `}>
                     {date.getDate()}
                   </span>
                 </div>
                 
                 {dayData && dayData.durationMs > 0 && (
-                  <div className="mt-auto">
-                    <div className="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded truncate text-center">
+                  <div className="mt-auto relative z-10">
+                    <div className="text-xs font-bold text-primary bg-primary/10 border border-primary/20 px-2 py-1.5 rounded-lg truncate text-center shadow-inner">
                       {formatDuration(dayData.durationMs)}
                     </div>
                   </div>

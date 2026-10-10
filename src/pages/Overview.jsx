@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { getStartOfDayUTC, getOverlapDurationMs, formatDuration, formatTime, getKolkataDate } from '../lib/dateUtils';
 
-const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#14b8a6', '#6366f1'];
+const COLORS = ['#155e39', '#22c55e', '#86efac', '#dcfce3', '#064e3b', '#10b981', '#a7f3d0'];
 
 function StatCard({ title, value, icon: Icon, subtitle, subtitleColor }) {
   return (
@@ -319,10 +319,10 @@ export default function Overview({ session: authSession }) {
             <div className="flex-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#262730" />
-                  <XAxis dataKey="displayDate" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dy={10} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} tickFormatter={(val) => `${val}h`} />
-                  <RechartsTooltip content={<CustomTooltipGrouped />} cursor={{ fill: '#262730', opacity: 0.4 }} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis dataKey="displayDate" axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} tickFormatter={(val) => `${val}h`} />
+                  <RechartsTooltip content={<CustomTooltipGrouped />} cursor={{ fill: '#f9fafb', opacity: 0.8 }} />
                   <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
                   {profiles.map((p, idx) => (
                     <Bar key={p.id} dataKey={`${p.id}_hours`} name={p.display_name || p.full_name || p.username || 'Unknown User'} fill={COLORS[idx % COLORS.length]} radius={[2, 2, 0, 0]} onClick={(data) => handleBarClick(data, p.id)} cursor="pointer" />
@@ -353,7 +353,7 @@ export default function Overview({ session: authSession }) {
                       return <Cell key={`cell-${index}`} fill={COLORS[profileIndex % COLORS.length]} />;
                     })}
                   </Pie>
-                  <RechartsTooltip formatter={(val) => formatDuration(val)} contentStyle={{ backgroundColor: '#14151a', borderColor: '#262730', borderRadius: '8px' }} itemStyle={{ color: '#f3f4f6' }} />
+                  <RechartsTooltip formatter={(val) => formatDuration(val)} contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e5e7eb', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} itemStyle={{ color: '#111827' }} />
                   <Legend iconType="circle" verticalAlign="bottom" />
                 </PieChart>
               </ResponsiveContainer>
@@ -460,12 +460,12 @@ export default function Overview({ session: authSession }) {
               <div className="flex-1 min-h-0 cursor-pointer">
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={chartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }} onClick={(data) => handleBarClick(data, profile.id)}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#262730" />
-                    <XAxis dataKey="displayDate" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dy={10} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} tickFormatter={(val) => `${val}h`} />
-                    <RechartsTooltip content={<CustomTooltipIndividual />} cursor={{ fill: '#262730', opacity: 0.4 }} />
-                    <Bar dataKey={`${profile.id}_hours`} name="Work Hours" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                    <Line type="monotone" dataKey="movingAverage" name="3-Day Trend" stroke="#10b981" strokeWidth={2} dot={false} strokeDasharray="5 5" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <XAxis dataKey="displayDate" axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} dy={10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} tickFormatter={(val) => `${val}h`} />
+                    <RechartsTooltip content={<CustomTooltipIndividual />} cursor={{ fill: '#f9fafb', opacity: 0.8 }} />
+                    <Bar dataKey={`${profile.id}_hours`} name="Work Hours" fill="#155e39" radius={[6, 6, 0, 0]} />
+                    <Line type="monotone" dataKey="movingAverage" name="3-Day Trend" stroke="#22c55e" strokeWidth={2} dot={false} strokeDasharray="5 5" />
                   </ComposedChart>
                 </ResponsiveContainer>
               </div>
