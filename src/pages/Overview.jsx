@@ -186,7 +186,7 @@ export default function Overview({ session: authSession }) {
     diffColor = 'text-emerald-500';
     DiffIcon = TrendingUp;
   } else if (diffMs < -60000) {
-    diffText = `${formatDuration(Math.abs(diffMs)))}} less than previous period`;
+    diffText = `${formatDuration(Math.abs(diffMs))} less than previous period`;
     diffColor = 'text-rose-500';
     DiffIcon = TrendingDown;
   } else if (prevPeriodMs === 0 && totalPeriodMs === 0) {
