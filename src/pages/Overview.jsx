@@ -324,7 +324,7 @@ export default function Overview({ session: authSession }) {
                     <RechartsTooltip content={<CustomTooltipGrouped />} />
                     <Legend iconType="circle" />
                     {profiles.map((p, idx) => (
-                      <Line key={p.id} type="monotone" dataKey={`${p.id}_hours`} name={p.full_name || p.username} stroke={COLORS[idx % COLORS.length]} strokeWidth={2} dot={{ r: 3, strokeWidth: 1 }} activeDot={{ r: 6 }} />
+                      <Line key={p.id} type="monotone" dataKey={`${p.id}_hours`} name={p.full_name || p.username || 'Unknown User'} stroke={COLORS[idx % COLORS.length]} strokeWidth={2} dot={{ r: 3, strokeWidth: 1 }} activeDot={{ r: 6 }} />
                     ))}
                   </LineChart>
                 </ResponsiveContainer>
