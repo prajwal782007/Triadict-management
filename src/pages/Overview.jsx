@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { getStartOfDayUTC, getOverlapDurationMs, formatDuration, formatTime, getKolkataDate } from '../lib/dateUtils';
 
-const COLORS = ['#155e39', '#22c55e', '#86efac', '#dcfce3', '#064e3b', '#10b981', '#a7f3d0'];
+const COLORS = ['#1a1a1a', '#e05d36', '#4a4a4a', '#c94c28', '#333333', '#8b4025'];
 
 function StatCard({ title, value, icon: Icon, subtitle, subtitleColor }) {
   return (
@@ -291,11 +291,11 @@ export default function Overview({ session: authSession }) {
                     <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center text-text-main font-bold border border-border">
                       {(p.display_name || p.full_name || p.username || '?').charAt(0).toUpperCase()}
                     </div>
-                    <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background ${isOnline ? 'bg-green-500' : 'bg-gray-500'}`}></div>
+                    <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background ${isOnline ? 'bg-primary' : 'bg-gray-400'}`}></div>
                   </div>
                   <div>
                     <p className="text-text-main font-medium">{p.display_name || p.full_name || p.username}</p>
-                    <p className={`text-xs ${isOnline ? 'text-green-400 font-medium' : 'text-text-muted'}`}>{isOnline ? 'Online in VC' : 'Offline'}</p>
+                    <p className={`text-xs ${isOnline ? 'text-primary font-medium' : 'text-text-muted'}`}>{isOnline ? 'Online in VC' : 'Offline'}</p>
                   </div>
                 </div>
               );
@@ -464,8 +464,8 @@ export default function Overview({ session: authSession }) {
                     <XAxis dataKey="displayDate" axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} dy={10} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} tickFormatter={(val) => `${val}h`} />
                     <RechartsTooltip content={<CustomTooltipIndividual />} cursor={{ fill: '#f9fafb', opacity: 0.8 }} />
-                    <Bar dataKey={`${profile.id}_hours`} name="Work Hours" fill="#155e39" radius={[6, 6, 0, 0]} />
-                    <Line type="monotone" dataKey="movingAverage" name="3-Day Trend" stroke="#22c55e" strokeWidth={2} dot={false} strokeDasharray="5 5" />
+                    <Bar dataKey={`${profile.id}_hours`} name="Work Hours" fill="#1a1a1a" radius={[6, 6, 0, 0]} />
+                    <Line type="monotone" dataKey="movingAverage" name="3-Day Trend" stroke="#e05d36" strokeWidth={2} dot={false} strokeDasharray="5 5" />
                   </ComposedChart>
                 </ResponsiveContainer>
               </div>

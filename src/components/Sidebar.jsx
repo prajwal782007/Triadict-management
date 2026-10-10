@@ -16,11 +16,13 @@ export default function Sidebar() {
         <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary">
           <Hexagon size={20} className="fill-primary/20" />
         </div>
-        <span className="font-semibold text-text-main tracking-wide">TRIADICT Studio</span>
+        <span className="font-serif text-2xl italic text-text-main tracking-wide">
+          Triadict <span className="font-sans text-[10px] uppercase not-italic tracking-widest font-semibold ml-1 opacity-70">Studio</span>
+        </span>
       </div>
       
       <div className="flex-1 py-6 px-3 flex flex-col gap-1 overflow-y-auto">
-        <div className="text-xs font-medium text-text-muted px-3 mb-2 uppercase tracking-wider">
+        <div className="text-[10px] font-mono text-text-muted px-3 mb-2 uppercase tracking-widest">
           Workspace
         </div>
         

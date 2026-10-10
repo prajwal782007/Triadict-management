@@ -15,8 +15,8 @@ export default function Topbar({ title, session }) {
   return (
     <header className="h-16 border-b border-border bg-surface/50 backdrop-blur-sm flex items-center justify-between px-4 md:px-8 shrink-0">
       <div className="flex flex-col">
-        <h1 className="text-lg font-semibold text-text-main leading-tight">{title}</h1>
-        <span className="text-xs text-text-muted">{today}</span>
+        <h1 className="text-2xl font-serif italic text-text-main leading-tight">{title}</h1>
+        <span className="text-[10px] font-mono uppercase tracking-widest text-text-muted mt-0.5">{today}</span>
       </div>
       
       <div className="flex items-center gap-4">

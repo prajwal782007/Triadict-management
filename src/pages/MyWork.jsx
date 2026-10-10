@@ -161,11 +161,11 @@ export default function MyWork({ session: authSession }) {
                 
                 return (
                   <div key={session.id} className="p-4 rounded-lg border border-border bg-background relative overflow-hidden">
-                    {isActive && <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>}
+                    {isActive && <div className="absolute top-0 left-0 w-1 h-full bg-primary"></div>}
                     <div className="flex justify-between items-start mb-2">
                       <div className="font-medium text-text-main">Session {idx + 1}</div>
                       {isActive ? (
-                        <span className="text-xs font-medium text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded">Active</span>
+                        <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">Active</span>
                       ) : (
                         <span className="text-xs font-medium text-text-muted bg-surface px-2 py-0.5 rounded border border-border">Completed</span>
                       )}
