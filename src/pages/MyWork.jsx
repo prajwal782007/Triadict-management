@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, User } from 'lucide-react';
 import { getStartOfDayUTC, getOverlapDurationMs, formatDuration, formatTime, getKolkataDate } from '../lib/dateUtils';
@@ -6,17 +7,25 @@ import { getStartOfDayUTC, getOverlapDurationMs, formatDuration, formatTime, get
 const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export default function MyWork({ session: authSession }) {
+  const location = useLocation();
+  const initialDateStr = location.state?.selectedDate || null;
+  const initialUserId = location.state?.selectedUserId || '';
+
   const [profiles, setProfiles] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedUserId, setSelectedUserId] = useState('');
+  const [selectedUserId, setSelectedUserId] = useState(initialUserId);
   
   const [currentMonth, setCurrentMonth] = useState(() => {
+    if (initialDateStr) {
+       const [y, m] = initialDateStr.split('-');
+       return new Date(parseInt(y), parseInt(m) - 1, 1);
+    }
     const kolkataNow = getKolkataDate(Date.now());
     return new Date(kolkataNow.getFullYear(), kolkataNow.getMonth(), 1);
   });
   
-  const [selectedDateStr, setSelectedDateStr] = useState(null);
+  const [selectedDateStr, setSelectedDateStr] = useState(initialDateStr);
   const [nowMs, setNowMs] = useState(Date.now());
 
   useEffect(() => {
@@ -36,11 +45,13 @@ export default function MyWork({ session: authSession }) {
       setProfiles(loadedProfiles);
       setSessions(sessionsRes.data || []);
       
-      if (authSession?.user?.id) {
-        const p = loadedProfiles.find(p => p.id === authSession.user.id);
-        if (p) setSelectedUserId(p.id);
-      } else if (loadedProfiles.length > 0) {
-        setSelectedUserId(loadedProfiles[0].id);
+      if (!initialUserId) {
+        if (authSession?.user?.id) {
+          const p = loadedProfiles.find(p => p.id === authSession.user.id);
+          if (p) setSelectedUserId(p.id);
+        } else if (loadedProfiles.length > 0) {
+          setSelectedUserId(loadedProfiles[0].id);
+        }
       }
     } catch (err) {
       console.error('Error fetching calendar data:', err);
