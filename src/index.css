@@ -1,14 +1,38 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #f4f6f8;
-  --color-surface: #ffffff;
-  --color-surface-hover: #f9fafb;
-  --color-border: #e5e7eb;
-  --color-primary: #155e39; /* Deep forest green */
-  --color-primary-hover: #166534;
-  --color-text-main: #111827;
-  --color-text-muted: #6b7280;
+  --color-background: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+}
+
+:root {
+  /* Light Theme (Donezo) */
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --surface-hover: #f9fafb;
+  --border: #e5e7eb;
+  --primary: #155e39; /* Deep forest green */
+  --primary-hover: #166534;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+}
+
+.dark {
+  /* Dark Theme */
+  --bg: #0d0d12;
+  --surface: #14151a;
+  --surface-hover: #1c1d24;
+  --border: #262730;
+  --primary: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
 }
 
 body {
