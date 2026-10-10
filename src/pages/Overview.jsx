@@ -53,8 +53,27 @@ export default function Overview({ session: authSession }) {
       if (sessionsRes.error) throw sessionsRes.error;
       
       const loadedProfiles = profilesRes.data || [];
-      setProfiles(loadedProfiles);
-      setSessions(sessionsRes.data || []);
+      const loadedSessions = sessionsRes.data || [];
+      
+      // Ensure we have a series for ALL team members who have recorded sessions,
+      // even if their profile is missing from the DB or hidden by RLS.
+      const uniqueDiscordIds = [...new Set(loadedSessions.map(s => s.discord_user_id).filter(Boolean))];
+      
+      const actualTeamMembers = [...loadedProfiles];
+      
+      uniqueDiscordIds.forEach(dId => {
+        if (!actualTeamMembers.find(p => p.discord_user_id === dId)) {
+          actualTeamMembers.push({
+            id: `discord-${dId}`, // Stable string ID to serve as React key and dataKey
+            discord_user_id: dId,
+            full_name: `Discord User ${dId.substring(0, 4)}`, // Sensible fallback display name
+            username: `User_${dId.substring(0, 4)}`
+          });
+        }
+      });
+      
+      setProfiles(actualTeamMembers);
+      setSessions(loadedSessions);
     } catch (err) {
       console.error('Error fetching data:', err);
     } finally {
