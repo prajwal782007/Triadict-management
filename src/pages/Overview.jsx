@@ -271,7 +271,7 @@ export default function Overview({ session: authSession }) {
                   <RechartsTooltip content={<CustomTooltipGrouped />} cursor={{ fill: '#262730', opacity: 0.4 }} />
                   <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
                   {profiles.map((p, idx) => (
-                    <Bar key={p.id} dataKey={`${p.id}_hours`} name={p.full_name || p.username} fill={COLORS[idx % COLORS.length]} radius={[2, 2, 0, 0]} onClick={(data) => handleBarClick(data, p.id)} cursor="pointer" />
+                    <Bar key={p.id} dataKey={`${p.id}_hours`} name={p.full_name || p.username || 'Unknown User'} fill={COLORS[idx % COLORS.length]} radius={[2, 2, 0, 0]} onClick={(data) => handleBarClick(data, p.id)} cursor="pointer" />
                   ))}
                 </BarChart>
               </ResponsiveContainer>
@@ -298,7 +298,7 @@ export default function Overview({ session: authSession }) {
                     <RechartsTooltip content={<CustomTooltipStacked />} cursor={{ fill: '#262730', opacity: 0.4 }} />
                     <Legend iconType="circle" />
                     {profiles.map((p, idx) => (
-                      <Bar key={p.id} dataKey={`${p.id}_hours`} name={p.full_name || p.username} stackId="a" fill={COLORS[idx % COLORS.length]} radius={[idx === profiles.length -1 ? 4 : 0, idx === profiles.length -1 ? 4 : 0, 0, 0]} onClick={(data) => handleBarClick(data, p.id)} cursor="pointer" />
+                      <Bar key={p.id} dataKey={`${p.id}_hours`} name={p.full_name || p.username || 'Unknown User'} stackId="a" fill={COLORS[idx % COLORS.length]} radius={[idx === profiles.length -1 ? 4 : 0, idx === profiles.length -1 ? 4 : 0, 0, 0]} onClick={(data) => handleBarClick(data, p.id)} cursor="pointer" />
                     ))}
                   </BarChart>
                 </ResponsiveContainer>
