@@ -261,6 +261,14 @@ export default function Overview({ session: authSession }) {
 
     return (
       <div className="flex flex-col gap-8">
+        <div id="diagnostics-panel" className="bg-surface border border-border p-4 rounded-xl text-xs font-mono max-h-96 overflow-auto">
+          <h3>Diagnostics</h3>
+          <div>Total profiles: {profiles.length}</div>
+          <div>Profiles with discord_user_id: {profiles.filter(p => p.discord_user_id).length}</div>
+          <div>Total sessions: {sessions.length}</div>
+          <div>Unmatched sessions: {sessions.filter(s => !profiles.find(p => p.discord_user_id === s.discord_user_id)).length}</div>
+          <pre>{JSON.stringify({ profiles, sessions: sessions.slice(0, 5) }, null, 2)}</pre>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 shrink-0">
           <StatCard title="Total Team Hours" value={formatDuration(totalTeamMs)} icon={Clock} subtitle="Tracked voice time" />
           <StatCard title="Avg Daily Team Hours" value={formatDuration(avgDailyTeamMs)} icon={Activity} subtitle={`Across ${chartData.length} days`} />
