@@ -65,3 +65,16 @@ CREATE POLICY "Users can update their own learning logs"
 ON public.learning_logs FOR UPDATE 
 USING (true)
 WITH CHECK (auth.uid() = member_id);
+
+-- Voice Sessions Policies
+ALTER TABLE public.voice_sessions ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'voice_sessions' AND policyname = 'Users can view all voice sessions'
+    ) THEN
+        CREATE POLICY "Users can view all voice sessions" ON public.voice_sessions FOR SELECT USING (true);
+    END IF;
+END
+$$;

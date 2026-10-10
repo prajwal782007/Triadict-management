@@ -212,7 +212,7 @@ export default function MyWork({ session: authSession }) {
             className="bg-background border border-border rounded-md px-3 py-1.5 text-sm text-text-main focus:outline-none focus:border-primary/50"
           >
             {profiles.map(p => (
-              <option key={p.id} value={p.id}>{p.full_name || p.username || 'Unknown User'}</option>
+              <option key={p.id} value={p.id}>{p.display_name || p.full_name || p.username || 'Unknown User'}</option>
             ))}
           </select>
         </div>

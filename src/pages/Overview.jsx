@@ -66,6 +66,7 @@ export default function Overview({ session: authSession }) {
           actualTeamMembers.push({
             id: `discord-${dId}`, // Stable string ID to serve as React key and dataKey
             discord_user_id: dId,
+            display_name: `Discord User ${dId.substring(0, 4)}`,
             full_name: `Discord User ${dId.substring(0, 4)}`, // Sensible fallback display name
             username: `User_${dId.substring(0, 4)}`
           });
@@ -197,13 +198,13 @@ export default function Overview({ session: authSession }) {
     });
 
     const mostActiveMemberName = mostActiveMemberId 
-      ? (profiles.find(p => p.id === mostActiveMemberId)?.full_name || profiles.find(p => p.id === mostActiveMemberId)?.username) 
+      ? (profiles.find(p => p.id === mostActiveMemberId)?.display_name || profiles.find(p => p.id === mostActiveMemberId)?.full_name || profiles.find(p => p.id === mostActiveMemberId)?.username) 
       : 'None';
 
     const pieData = profiles
       .filter(p => memberTotals[p.id].ms > 0)
       .map(p => ({
-        name: p.full_name || p.username || 'Unknown User',
+        name: p.display_name || p.full_name || p.username || 'Unknown User',
         value: memberTotals[p.id].ms,
         id: p.id
       }))
@@ -261,13 +262,26 @@ export default function Overview({ session: authSession }) {
 
     return (
       <div className="flex flex-col gap-8">
-        <div id="diagnostics-panel" className="bg-surface border border-border p-4 rounded-xl text-xs font-mono max-h-96 overflow-auto">
-          <h3>Diagnostics</h3>
-          <div>Total profiles: {profiles.length}</div>
-          <div>Profiles with discord_user_id: {profiles.filter(p => p.discord_user_id).length}</div>
-          <div>Total sessions: {sessions.length}</div>
-          <div>Unmatched sessions: {sessions.filter(s => !profiles.find(p => p.discord_user_id === s.discord_user_id)).length}</div>
-          <pre>{JSON.stringify({ profiles, sessions: sessions.slice(0, 5) }, null, 2)}</pre>
+        <div id="diagnostics-panel" className="bg-surface border border-border p-4 rounded-xl text-xs font-mono max-h-96 overflow-auto mb-4">
+          <h3 className="font-bold mb-2">Development Diagnostics</h3>
+          <p>Total profiles found: {profiles.length}</p>
+          <p>Profiles with linked Discord IDs: {profiles.filter(p => p.discord_user_id).length}</p>
+          <p>Total voice sessions returned: {sessions.length}</p>
+          <p>Unmatched sessions: {sessions.filter(s => !profiles.find(p => p.discord_user_id === s.discord_user_id)).length}</p>
+          
+          <div className="mt-4">
+            <h4 className="font-bold">Calculated Hours & Sessions per Member:</h4>
+            {profiles.map(p => (
+              <p key={p.id}>{p.display_name || p.full_name || p.username}: {memberTotals[p.id]?.sessions || 0} sessions, {formatDuration(memberTotals[p.id]?.ms || 0)}</p>
+            ))}
+          </div>
+          
+          <div className="mt-4">
+            <h4 className="font-bold">Chart Series (Dataset Keys):</h4>
+            {profiles.map(p => (
+              <p key={p.id}>Label: "{p.display_name || p.full_name || p.username}", Key: "{p.id}_hours"</p>
+            ))}
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 shrink-0">
           <StatCard title="Total Team Hours" value={formatDuration(totalTeamMs)} icon={Clock} subtitle="Tracked voice time" />
@@ -325,7 +339,7 @@ export default function Overview({ session: authSession }) {
                     <RechartsTooltip content={<CustomTooltipStacked />} cursor={{ fill: '#262730', opacity: 0.4 }} />
                     <Legend iconType="circle" />
                     {profiles.map((p, idx) => (
-                      <Bar key={p.id} dataKey={`${p.id}_hours`} name={p.full_name || p.username || 'Unknown User'} stackId="a" fill={COLORS[idx % COLORS.length]} radius={[idx === profiles.length -1 ? 4 : 0, idx === profiles.length -1 ? 4 : 0, 0, 0]} onClick={(data) => handleBarClick(data, p.id)} cursor="pointer" />
+                      <Bar key={p.id} dataKey={`${p.id}_hours`} name={p.display_name || p.full_name || p.username || 'Unknown User'} stackId="a" fill={COLORS[idx % COLORS.length]} radius={[idx === profiles.length -1 ? 4 : 0, idx === profiles.length -1 ? 4 : 0, 0, 0]} onClick={(data) => handleBarClick(data, p.id)} cursor="pointer" />
                     ))}
                   </BarChart>
                 </ResponsiveContainer>
@@ -351,7 +365,7 @@ export default function Overview({ session: authSession }) {
                     <RechartsTooltip content={<CustomTooltipGrouped />} />
                     <Legend iconType="circle" />
                     {profiles.map((p, idx) => (
-                      <Line key={p.id} type="monotone" dataKey={`${p.id}_hours`} name={p.full_name || p.username || 'Unknown User'} stroke={COLORS[idx % COLORS.length]} strokeWidth={2} dot={{ r: 3, strokeWidth: 1 }} activeDot={{ r: 6 }} />
+                      <Line key={p.id} type="monotone" dataKey={`${p.id}_hours`} name={p.display_name || p.full_name || p.username || 'Unknown User'} stroke={COLORS[idx % COLORS.length]} strokeWidth={2} dot={{ r: 3, strokeWidth: 1 }} activeDot={{ r: 6 }} />
                     ))}
                   </LineChart>
                 </ResponsiveContainer>
@@ -568,7 +582,7 @@ export default function Overview({ session: authSession }) {
             >
               <option value="all">All Team Members</option>
               {profiles.map(p => (
-                <option key={p.id} value={p.id}>{p.full_name || p.username || 'Unknown User'}</option>
+                <option key={p.id} value={p.id}>{p.display_name || p.full_name || p.username || 'Unknown User'}</option>
               ))}
             </select>
           </div>
