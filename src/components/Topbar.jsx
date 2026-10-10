@@ -1,7 +1,10 @@
 import { Bell, Search, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
 export default function Topbar({ title, session }) {
+  const navigate = useNavigate();
+  
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
@@ -34,7 +37,11 @@ export default function Topbar({ title, session }) {
           <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full ring-2 ring-surface"></span>
         </button>
         
-        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-purple-800 border border-border overflow-hidden cursor-pointer" title={session?.user?.email}>
+        <div 
+          onClick={() => navigate('/profile')}
+          className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-orange-800 border border-border overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all" 
+          title="View Profile"
+        >
           <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${session?.user?.email || 'Felix'}&backgroundColor=transparent`} alt="User" className="w-full h-full object-cover" />
         </div>
         

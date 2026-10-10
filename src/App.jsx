@@ -8,6 +8,7 @@ import Tasks from './pages/Tasks';
 import LearningLog from './pages/LearningLog';
 import TeamActivity from './pages/TeamActivity';
 import Settings from './pages/Settings';
+import Profile from './pages/Profile';
 import Auth from './components/Auth';
 import { supabase } from './lib/supabase';
 
@@ -37,6 +38,7 @@ function App() {
       case '/learning-log': return 'Learning Log';
       case '/team-activity': return 'Team Activity';
       case '/settings': return 'Settings';
+      case '/profile': return 'My Profile';
       default: return 'Overview';
     }
   };
@@ -61,6 +63,7 @@ function App() {
               <Route path="/learning-log" element={<LearningLog session={session} />} />
               <Route path="/team-activity" element={<TeamActivity session={session} />} />
               <Route path="/settings" element={<Settings session={session} />} />
+              <Route path="/profile" element={<Profile session={session} />} />
             </Routes>
           </div>
         </main>

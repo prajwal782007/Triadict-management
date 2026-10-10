@@ -12,13 +12,8 @@ const navItems = [
 export default function Sidebar() {
   return (
     <aside className="w-64 border-r border-border bg-surface flex flex-col h-full shrink-0">
-      <div className="h-16 flex items-center px-6 border-b border-border gap-3">
-        <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary">
-          <Hexagon size={20} className="fill-primary/20" />
-        </div>
-        <span className="font-serif text-2xl italic text-text-main tracking-wide">
-          Triadict <span className="font-sans text-[10px] uppercase not-italic tracking-widest font-semibold ml-1 opacity-70">Studio</span>
-        </span>
+      <div className="h-16 flex items-center px-6 border-b border-border">
+        <img src="/Triadict Logo.jpeg" alt="Triadict Studio Logo" className="h-10 w-10 object-cover rounded-full shadow-sm" />
       </div>
       
       <div className="flex-1 py-6 px-3 flex flex-col gap-1 overflow-y-auto">
