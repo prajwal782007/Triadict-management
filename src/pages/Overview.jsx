@@ -184,7 +184,7 @@ export default function Overview({ session: authSession }) {
     const pieData = profiles
       .filter(p => memberTotals[p.id].ms > 0)
       .map(p => ({
-        name: p.full_name || p.username,
+        name: p.full_name || p.username || 'Unknown User',
         value: memberTotals[p.id].ms,
         id: p.id
       }))
