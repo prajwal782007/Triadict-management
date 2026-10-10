@@ -312,7 +312,7 @@ export default function Overview({ session: authSession }) {
                   <RechartsTooltip content={<CustomTooltipGrouped />} cursor={{ fill: '#262730', opacity: 0.4 }} />
                   <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
                   {profiles.map((p, idx) => (
-                    <Bar key={p.id} dataKey={`${p.id}_hours`} name={p.full_name || p.username || 'Unknown User'} fill={COLORS[idx % COLORS.length]} radius={[2, 2, 0, 0]} onClick={(data) => handleBarClick(data, p.id)} cursor="pointer" />
+                    <Bar key={p.id} dataKey={`${p.id}_hours`} name={p.display_name || p.full_name || p.username || 'Unknown User'} fill={COLORS[idx % COLORS.length]} radius={[2, 2, 0, 0]} onClick={(data) => handleBarClick(data, p.id)} cursor="pointer" />
                   ))}
                 </BarChart>
               </ResponsiveContainer>
@@ -488,7 +488,7 @@ export default function Overview({ session: authSession }) {
           <div className="lg:col-span-2 bg-surface border border-border rounded-xl p-5 flex flex-col min-h-[450px]">
             <div className="mb-6 flex justify-between items-end">
               <div>
-                <h3 className="font-medium text-text-main text-lg">{profile.full_name || profile.username}'s Daily Work Hours</h3>
+                <h3 className="font-medium text-text-main text-lg">{profile.display_name || profile.full_name || profile.username}'s Daily Work Hours</h3>
                 <p className="text-sm text-text-muted mt-1">Tracked duration and 3-day trend line.</p>
               </div>
             </div>
